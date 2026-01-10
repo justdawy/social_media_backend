@@ -1,8 +1,8 @@
 from flask import Flask
 
 from .extensions import db, migrate, jwt
-
 from .models.user import User
+from .cli import register_cli
 
 def create_app(config_file='config.py'):
     app = Flask(__name__)
@@ -11,5 +11,7 @@ def create_app(config_file='config.py'):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    
+    register_cli(app)
     
     return app
