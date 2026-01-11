@@ -6,3 +6,4 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 #JWT
 JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'super-secret')
+JWT_VERIFY_SUB = False
