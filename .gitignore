@@ -14,3 +14,6 @@ instance/
 
 # pytests
 .pytest_cache/
+
+# vscode
+.vscode/
