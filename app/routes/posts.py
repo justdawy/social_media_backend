@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models import Post
 from app.extensions import db
+from app.schemas import post_schema
 
 posts_bp = Blueprint('posts', __name__, url_prefix='/posts')
 
@@ -23,7 +24,7 @@ def create_post():
         db.session.add(post)
         db.session.commit()
 
-        return jsonify(message='Post created successfully!', post=post.to_json()), 201
+        return jsonify(message='Post created successfully!', post=post_schema.dump(post)), 201
     except Exception as e:
         db.session.rollback()
         return jsonify(message='Failed to create post')

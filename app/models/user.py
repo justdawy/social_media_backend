@@ -31,22 +31,3 @@ class User(Base):
     
     def __repr__(self):
         return f'<User {self.username}>'
-    
-    def to_json(self, include_email=False):
-        """"Convert user to dict (for API responses)"""
-        data = {
-            'id': self.id,
-            'username': self.username,
-            'display_name': self.display_name,
-            'bio': self.bio,
-            'profile_picture_url': self.profile_picture_url,
-            'cover_photo_url': self.cover_photo_url,
-            'location': self.location,
-            'website': self.website,
-            'created_at': self.created_at.isoformat()
-        }
-        if include_email:
-            data['email'] = self.email
-        
-        return data
-    

@@ -20,16 +20,3 @@ class Post(Base):
     
     def __repr__(self):
         return f'<Post {self.id}; title={self.title}>'
-    
-    def to_json(self):
-        """"Convert user to dict (for API responses)"""
-        data = {
-            'id': self.id,
-            'title': self.title,
-            'content': self.content,
-            'user_id': self.user_id,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
-        }
-        
-        return data

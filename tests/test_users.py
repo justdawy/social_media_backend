@@ -21,8 +21,10 @@ def test_get_user(client):
         'Authorization': f'Bearer {token}'
     })
     
+    user = response.json.get('user')
+    
     assert response.status_code == 200
-    assert response.json.get('username') == 'testuser'
+    assert user.get('username') == 'testuser'
     
 def test_edit_current_user(client):
     login_response = register_and_login(client)
@@ -32,7 +34,6 @@ def test_edit_current_user(client):
     response = client.put('/users/me/edit', headers={
         'Authorization': f'Bearer {token}'
     }, json={
-        'username': 'testuser2',
         'display_name': 'Test User 2',
         'bio': 'Test User 2 Bio',
         'location': 'USA',
@@ -42,12 +43,11 @@ def test_edit_current_user(client):
     })
     
     assert response.status_code == 200
-    data = response.json
-    assert data.get('email') == 'test@example.com'
-    assert data.get('username') == 'testuser2'
-    assert data.get('display_name') == 'Test User 2'
-    assert data.get('bio') == 'Test User 2 Bio'
-    assert data.get('location') == 'USA'
-    assert data.get('website') == 'example.com'
-    assert data.get('profile_picture_url') == 'example.com/testuser2/profile_picture'
-    assert data.get('cover_photo_url') == 'example.com/testuser2/cover_photo'
+    user = response.json.get('user')
+    assert user.get('email') == 'test@example.com'
+    assert user.get('display_name') == 'Test User 2'
+    assert user.get('bio') == 'Test User 2 Bio'
+    assert user.get('location') == 'USA'
+    assert user.get('website') == 'example.com'
+    assert user.get('profile_picture_url') == 'example.com/testuser2/profile_picture'
+    assert user.get('cover_photo_url') == 'example.com/testuser2/cover_photo'

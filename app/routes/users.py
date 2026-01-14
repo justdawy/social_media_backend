@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models import User
 from app.extensions import db
+from app.schemas import user_schema, public_user_schema
 
 users_bp = Blueprint('users', __name__, url_prefix='/users')
 
@@ -10,14 +11,14 @@ users_bp = Blueprint('users', __name__, url_prefix='/users')
 @jwt_required()
 def get_user(id):
     user = db.get_or_abort(User, id)
-    return jsonify(user.to_json())
+    return jsonify(message='Success', user=public_user_schema.dump(user))
 
 @users_bp.route('/me', methods=['GET'])
 @jwt_required()
 def get_current_user():
     current_user_id = get_jwt_identity()
     user = db.get_or_abort(User, current_user_id)
-    return jsonify(user.to_json(include_email=True))
+    return jsonify(user_schema.dump(user))
 
 @users_bp.route('/me/edit', methods=['PUT'])
 @jwt_required()
@@ -50,7 +51,7 @@ def edit_current_user():
         db.session.commit()
         return jsonify(
             message='User updated successfully',
-            user=user.to_json(include_email=True)
+            user=user_schema.dump(user)
         ), 200
     except Exception as e:
         db.session.rollback()

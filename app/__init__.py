@@ -1,6 +1,6 @@
 from flask import Flask
 
-from .extensions import db, alembic, jwt
+from .extensions import db, alembic, jwt, ma
 from .models import User, Post
 from .cli import register_cli
 
@@ -12,6 +12,7 @@ def create_app(config_file='config.py'):
     db.init_app(app)
     alembic.init_app(app)
     jwt.init_app(app)
+    ma.init_app(app)
     
     register_cli(app)
     
