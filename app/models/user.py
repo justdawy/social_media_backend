@@ -5,7 +5,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from app.extensions import Base
-from . import Post
 
 class User(Base):
     __tablename__ = 'users'
@@ -25,7 +24,7 @@ class User(Base):
     website: Mapped[str] = mapped_column(String(255), nullable=True)
     
     # Posts
-    posts: Mapped[list['Post']] = relationship(back_populates='user')
+    posts: Mapped[list['Post']] = relationship(back_populates='user') # type: ignore
     
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
