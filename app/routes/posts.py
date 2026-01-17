@@ -1,9 +1,13 @@
+import os
+
 from datetime import datetime
 from datetime import UTC
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flasgger import swag_from
 from marshmallow import ValidationError
 
+from app import DOCS_DIR
 from app.models import Post, User
 from app.extensions import db
 from app.schemas import post_schema
@@ -12,97 +16,8 @@ posts_bp = Blueprint('posts', __name__, url_prefix='/posts')
 
 @posts_bp.route('/create', methods=['POST'])
 @jwt_required()
+@swag_from(os.path.join(DOCS_DIR, 'posts/create_post.yml'))
 def create_post():
-    """
-    Create a post
-    ---
-    tags:
-      - Posts
-    parameters:
-      - name: Authorization
-        in: header
-        type: string
-        required: true
-        description: Bearer JWT token
-      - name: body
-        in: body
-        required: true
-        schema:
-            type: object
-            required:
-                - title
-                - content
-            properties:
-                title:
-                    type: string
-                    maxLength: 50
-                    example: My first post
-                content:
-                    type: string
-                    example: Hello! It's my first post!
-
-    responses:
-      201:
-        description: Post created successfully
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Post created successfully!
-            post:
-              type: object
-              properties:
-                 id:
-                    type: integer
-                    example: 1
-                 title:
-                    type: string
-                    example: My first post
-                 content:
-                    type: string
-                    example: Hello! It's my first post!
-                 user_id:
-                    type: integer
-                    example: 1
-                 created_at:
-                    type: string
-                    format: date-time
-                    example: "2026-01-17T10:30:00Z"
-                 updated_at:
-                    type: string
-                    format: date-time
-                    example: "2026-01-17T10:30:00Z"
-                 
-      400:
-        description: Validation failed
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Validation failed.
-            errors:
-              type: object
-      401:
-        description: Unauthorized - Missing or invalid token
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Missing Authorization Header
-      500:
-        description: Server error
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Failed to create post
-            error:
-              type: string
-    """
     data = request.json
     data['user_id'] = get_jwt_identity()
 

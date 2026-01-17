@@ -1,0 +1,47 @@
+User Log in
+    ---
+    tags:
+      - Authentication
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+            - password
+          properties:
+            username:
+              type: string
+              example: johndoe
+            email:
+              type: string
+              format: email
+              example: john@example.com
+            password:
+              type: string
+              format: password
+              example: SecurePass123
+    responses:
+      200:
+        description: Successful login
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Login Successful
+            access_token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+            refresh_token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      401:
+        description: Failed logging in
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Bad email or username.

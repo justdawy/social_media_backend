@@ -1,4 +1,10 @@
+import os
+
+from pathlib import Path
 from flask import Flask
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DOCS_DIR = os.path.join(BASE_DIR, 'docs/')
 
 from .extensions import db, alembic, jwt, ma, swagger
 from .models import User, Post

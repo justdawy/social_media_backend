@@ -1,0 +1,18 @@
+JWT refresh token
+    ---
+    tags:
+      - Authentication
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer JWT refresh token
+    responses:
+      200:
+        description: Success
+        schema:
+            type: object
+            properties:
+                access_token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
