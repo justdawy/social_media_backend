@@ -45,6 +45,7 @@ def create_post():
 
 @posts_bp.route('/<int:id>/delete', methods=['DELETE'])
 @jwt_required()
+@swag_from(os.path.join(DOCS_DIR, 'posts/delete_post.yml'))
 def delete_post(id):
     post = db.get_or_abort(Post, id)
     try:
@@ -53,16 +54,18 @@ def delete_post(id):
         return jsonify(message='Post deleted successfully!')
     except Exception as e:
         db.session.rollback()
-        return jsonify(message='Deleting failed', error=str(e)), 500
+        return jsonify(message='Failed to create post', error=str(e)), 500
 
 @posts_bp.route('/<int:id>', methods=['GET'])
 @jwt_required()
+@swag_from(os.path.join(DOCS_DIR, 'posts/get_post.yml'))
 def get_post(id):
     post = db.get_or_abort(Post, id)
     return jsonify(message='Success', post=post_schema.dump(post))
 
 @posts_bp.route('/<int:id>/edit', methods=['PUT'])
 @jwt_required()
+@swag_from(os.path.join(DOCS_DIR, 'posts/edit_post.yml'))
 def edit_post(id):
     post = db.get_or_abort(Post, id)
     data = request.get_json()
@@ -111,6 +114,7 @@ def edit_post(id):
     
 @posts_bp.route('/user/<int:id>', methods=['GET'])
 @jwt_required()
+@swag_from(os.path.join(DOCS_DIR, 'posts/get_user_posts.yml'))
 def get_user_posts(id):
     user = db.get_or_abort(User, id)
     return jsonify(message='Success', posts=post_schema.dump(user.posts, many=True))
