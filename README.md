@@ -8,13 +8,16 @@ This is a learning project where I explored backend development with Flask. It's
 
 ## Features
 
-- User model with basic CRUD operations
-- Post model with basic CRUD operations
-- JWT authentication
+- User authentication with JWT (login, register, token refresh)
+- Post management (create, read, update, delete)
 - RESTful API endpoints
 - Database integration with SQLAlchemy
 - Database migrations with Alembic
+- Comprehensive error handling (custom JSON error responses)
+- Input validation with Marshmallow schemas
+- Interactive API documentation with Swagger UI
 - API testing with pytest
+
 
 ## Tech Stack
 
@@ -23,6 +26,7 @@ This is a learning project where I explored backend development with Flask. It's
 - **Flask-Marshmallow** - Object serialization/deserialization
 - **Flask-JWT-Extended** - JWT authentication
 - **Flask-Alembic** - Database migrations
+- **Flasgger** - Swagger UI documentation
 - **PostgreSQL** - Database (with psycopg2)
 - **pytest** - Testing framework
 - **uv** - Fast Python package installer
@@ -56,6 +60,10 @@ uv run flask db upgrade
 ```bash
 uv run run.py
 ```
+6. Access the API documentation:
+```
+Open your browser and navigate to http://localhost:5000/apidocs
+```
 
 ## Running Tests
 ```bash
@@ -72,6 +80,9 @@ This project was a great hands-on introduction to backend development. Here's wh
 - **API Development** - Handling JSON data, status codes, and error responses
 - **Authentication** - Implementing JWT-based authentication for secure endpoints
 - **Data Serialization** - Using Marshmallow schemas to validate and serialize data
+- **Error Handling** - Creating custom error handlers for consistent JSON error responses
+- **Input Validation** - Validating user input and providing clear error messages
+- **API Documentation** - Writing OpenAPI/Swagger documentation for endpoints
 - **Database Migrations** - Managing database schema changes with Alembic
 - **Testing** - Writing tests for API endpoints with pytest
 - **Configuration Management** - Separating config from code for different environments
@@ -85,6 +96,9 @@ If I continue working on this, I'd like to add:
 - More complex relationships (comments, likes, followers)
 - Password reset functionality
 - Rate limiting
+- Pagination for posts listing
+- File upload support for user avatars and post images
+- Email verification for new users
 
 ---
 
