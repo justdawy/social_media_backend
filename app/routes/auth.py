@@ -2,8 +2,10 @@ import os
 
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (
-    create_access_token, create_refresh_token, jwt_required,
-    get_jwt_identity
+    create_access_token,
+    create_refresh_token,
+    jwt_required,
+    get_jwt_identity,
 )
 from flasgger import swag_from
 from marshmallow import ValidationError
@@ -14,8 +16,9 @@ from app import DOCS_DIR
 from app.models import User
 from app.extensions import db
 from app.schemas import user_schema
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+
 
 @auth_bp.route('/register', methods=['POST'])
 @swag_from(os.path.join(DOCS_DIR, 'auth/register.yml'))
@@ -29,12 +32,12 @@ def register():
         return jsonify(message='That email already exists'), 409
     elif db.session.scalar(select(User).where(User.username == username)):
         return jsonify(message='That username already exists'), 409
-    
+
     password_hash = generate_password_hash(password)
     data.pop('password')
-    
+
     try:
-        validation = user_schema.load(data, session=db.session)
+        user_schema.load(data, session=db.session)  # Validation
         user = User(username=username, email=email, password_hash=password_hash)
         db.session.add(user)
         db.session.commit()
@@ -44,7 +47,7 @@ def register():
     except Exception as e:
         db.session.rollback()
         return jsonify(message='Create failed', error=str(e)), 500
-    
+
 
 @auth_bp.route('/login', methods=['POST'])
 @swag_from(os.path.join(DOCS_DIR, 'auth/login.yml'))
@@ -53,27 +56,29 @@ def login():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
-    
+
     if username:
         user = db.session.scalar(select(User).where(User.username == username))
     elif email:
         user = db.session.scalar(select(User).where(User.email == email))
     else:
         return jsonify(message='Enter username or email'), 401
-    
+
     if not user:
         return jsonify(message='Bad email or username. User doesnt exist.'), 401
-    
+
     if not check_password_hash(user.password_hash, password):
         return jsonify(message='Bad password.'), 401
-    
+
     access_token = create_access_token(identity=user.id)
     refresh_token = create_refresh_token(identity=user.id)
     return jsonify(
-        message='Login Successful', access_token=access_token,
-        refresh_token=refresh_token
+        message='Login Successful',
+        access_token=access_token,
+        refresh_token=refresh_token,
     )
-    
+
+
 @auth_bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 @swag_from(os.path.join(DOCS_DIR, 'auth/refresh.yml'))

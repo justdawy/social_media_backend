@@ -5,8 +5,10 @@ from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from sqlalchemy.orm import DeclarativeBase
 
+
 class Base(DeclarativeBase):
     pass
+
 
 db = SQLAlchemy()
 alembic = Alembic(metadatas=Base.metadata)

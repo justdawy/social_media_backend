@@ -14,6 +14,7 @@ from app.schemas import post_schema
 
 posts_bp = Blueprint('posts', __name__, url_prefix='/posts')
 
+
 @posts_bp.route('/create', methods=['POST'])
 @jwt_required()
 @swag_from(os.path.join(DOCS_DIR, 'posts/create_post.yml'))
@@ -22,26 +23,20 @@ def create_post():
     data['user_id'] = get_jwt_identity()
 
     try:
-        validation = post_schema.load(data, session=db.session)
+        post_schema.load(data, session=db.session)  # Validation
         post = Post(**data)
         db.session.add(post)
         db.session.commit()
 
         return jsonify(
-            message='Post created successfully!',
-            post=post_schema.dump(post)
+            message='Post created successfully!', post=post_schema.dump(post)
         ), 201
     except ValidationError as e:
-        return jsonify(
-            message='Validation failed.',
-            errors=e.messages_dict
-        ), 400
+        return jsonify(message='Validation failed.', errors=e.messages_dict), 400
     except Exception as e:
         db.session.rollback()
-        return jsonify(
-            message='Failed to create post',
-            error=str(e)
-        ), 500
+        return jsonify(message='Failed to create post', error=str(e)), 500
+
 
 @posts_bp.route('/<int:id>/delete', methods=['DELETE'])
 @jwt_required()
@@ -56,6 +51,7 @@ def delete_post(id):
         db.session.rollback()
         return jsonify(message='Failed to create post', error=str(e)), 500
 
+
 @posts_bp.route('/<int:id>', methods=['GET'])
 @jwt_required()
 @swag_from(os.path.join(DOCS_DIR, 'posts/get_post.yml'))
@@ -63,19 +59,18 @@ def get_post(id):
     post = db.get_or_abort(Post, id)
     return jsonify(message='Success', post=post_schema.dump(post))
 
+
 @posts_bp.route('/<int:id>/edit', methods=['PUT'])
 @jwt_required()
 @swag_from(os.path.join(DOCS_DIR, 'posts/edit_post.yml'))
 def edit_post(id):
     post = db.get_or_abort(Post, id)
     data = request.get_json()
-    
+
     data['user_id'] = get_jwt_identity()
-    
-    allowed_fields = [
-        'title', 'content'
-    ]
-    
+
+    allowed_fields = ['title', 'content']
+
     updated_fields = []
 
     for field in allowed_fields:
@@ -87,31 +82,25 @@ def edit_post(id):
             elif value is None:
                 setattr(post, field, None)
                 updated_fields.append(field)
-    
+
     if not updated_fields:
         return jsonify(message='No valid fields to update'), 400
 
     post.updated_at = datetime.now(UTC)
-    
+
     try:
-        validation = post_schema.load(data, session=db.session) # type: ignore
+        post_schema.load(data, session=db.session)  # Validation
         db.session.commit()
         return jsonify(
-            message='Post updated successfully',
-            post=post_schema.dump(post)
+            message='Post updated successfully', post=post_schema.dump(post)
         ), 200
     except ValidationError as e:
-        return jsonify(
-            message='Validation failed.',
-            errors=e.messages_dict
-        ), 400
+        return jsonify(message='Validation failed.', errors=e.messages_dict), 400
     except Exception as e:
         db.session.rollback()
-        return jsonify(
-            message='Update failed',
-            error=str(e)
-        ), 500
-    
+        return jsonify(message='Update failed', error=str(e)), 500
+
+
 @posts_bp.route('/user/<int:id>', methods=['GET'])
 @jwt_required()
 @swag_from(os.path.join(DOCS_DIR, 'posts/get_user_posts.yml'))

@@ -1,12 +1,16 @@
 import click
 
+from sqlalchemy.exc import IntegrityError
+
 from app.extensions import db
 from app.models import User
+
 
 @click.group()
 def seed():
     """Database seeding commands"""
     pass
+
 
 @seed.command('users')
 def seed_users():
@@ -17,7 +21,7 @@ def seed_users():
     db.session.add_all(users)
     try:
         db.session.commit()
-    except db.exc.IntegrityError:
+    except IntegrityError:
         click.echo('u already seeded users!')
         return db.session.rollback()
     click.echo('Seeded users!')
