@@ -1,9 +1,13 @@
+import os
+
 from datetime import datetime
 from datetime import UTC
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flasgger import swag_from
 from marshmallow import ValidationError
 
+from app import DOCS_DIR
 from app.models import User
 from app.extensions import db
 from app.schemas import user_schema, public_user_schema
@@ -13,6 +17,7 @@ users_bp = Blueprint('users', __name__, url_prefix='/users')
 
 @users_bp.route('/<int:id>', methods=['GET'])
 @jwt_required()
+@swag_from(os.path.join(DOCS_DIR, 'users/get_user.yml'))
 def get_user(id):
     user = db.get_or_abort(User, id)
     return jsonify(message='Success', user=public_user_schema.dump(user))
@@ -20,6 +25,7 @@ def get_user(id):
 
 @users_bp.route('/me', methods=['GET'])
 @jwt_required()
+@swag_from(os.path.join(DOCS_DIR, 'users/get_current_user.yml'))
 def get_current_user():
     current_user_id = get_jwt_identity()
     user = db.get_or_abort(User, current_user_id)
@@ -28,6 +34,7 @@ def get_current_user():
 
 @users_bp.route('/me/edit', methods=['PUT'])
 @jwt_required()
+@swag_from(os.path.join(DOCS_DIR, 'users/edit_current_user.yml'))
 def edit_current_user():
     current_user_id = get_jwt_identity()
     user = db.get_or_abort(User, current_user_id)

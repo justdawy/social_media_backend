@@ -1,0 +1,117 @@
+Edit current authenticated user
+---
+tags:
+  - Users
+parameters:
+  - name: Authorization
+    in: header
+    type: string
+    required: true
+    description: Bearer JWT token
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        display_name:
+          type: string
+          example: John Doe
+        bio:
+          type: string
+          example: Software developer and coffee enthusiast
+        location:
+          type: string
+          example: New York, NY
+        website:
+          type: string
+          example: https://johndoe.com
+        profile_picture_url:
+          type: string
+          example: https://example.com/profile.jpg
+        cover_photo_url:
+          type: string
+          example: https://example.com/cover.jpg
+responses:
+  200:
+    description: User updated successfully
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User updated successfully
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            username:
+              type: string
+              example: johndoe
+            email:
+              type: string
+              example: john@example.com
+            display_name:
+              type: string
+              example: John Doe
+            bio:
+              type: string
+              example: Software developer and coffee enthusiast
+            location:
+              type: string
+              example: New York, NY
+            website:
+              type: string
+              example: https://johndoe.com
+            profile_picture_url:
+              type: string
+              example: https://example.com/profile.jpg
+            cover_photo_url:
+              type: string
+              example: https://example.com/cover.jpg
+            created_at:
+              type: string
+              format: date-time
+              example: "2026-01-17T10:30:00Z"
+            updated_at:
+              type: string
+              format: date-time
+              example: "2026-01-17T12:45:00Z"
+  400:
+    description: Validation failed or no fields to update
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: No valid fields to update
+        error:
+          type: object
+  401:
+    description: Unauthorized - Missing or invalid token
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Missing Authorization Header
+  404:
+    description: User not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Resource not found
+  500:
+    description: Server error
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Update failed
+        error:
+          type: string

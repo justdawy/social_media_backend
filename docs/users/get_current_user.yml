@@ -1,0 +1,45 @@
+Get current authenticated user
+---
+tags:
+  - Users
+parameters:
+  - name: Authorization
+    in: header
+    type: string
+    required: true
+    description: Bearer JWT token
+responses:
+  200:
+    description: Successfully retrieved current user
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: johndoe
+        email:
+          type: string
+          example: john@example.com
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-01-17T10:30:00Z"
+  401:
+    description: Unauthorized - Missing or invalid token
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Missing Authorization Header
+  404:
+    description: User not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Resource not found
